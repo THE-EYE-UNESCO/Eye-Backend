@@ -1,12 +1,20 @@
 {
-  "name": "backend-service",
+  "name": "the-eye-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Crisis management and response system backend",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "nodemon src/index.ts",
+    "clean": "rimraf dist"
   },
-  "keywords": [],
+  "keywords": [
+    "crisis",
+    "management",
+    "response",
+    "emergency"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
@@ -28,6 +36,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
     "@types/node": "^25.0.9",
     "@types/pg": "^8.16.0",
     "@types/uuid": "^10.0.0",

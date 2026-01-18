@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.responderRoutes = void 0;
+const express_1 = require("express");
+const responderController_1 = require("../controllers/responderController");
+const auth_1 = require("../middleware/auth");
+const types_1 = require("../types");
+const router = (0, express_1.Router)();
+exports.responderRoutes = router;
+const responderController = new responderController_1.ResponderController();
+router.use(auth_1.authenticate);
+router.use((0, auth_1.authorize)(types_1.UserRole.RESPONDER));
+router.get('/incidents', responderController.getAssignedIncidents);
+router.get('/incidents/:id', responderController.getIncidentDetails);
+router.patch('/incidents/:id/status', responderController.updateIncidentStatus);
+router.post('/incidents/:id/evidence', responderController.uploadEvidence);
