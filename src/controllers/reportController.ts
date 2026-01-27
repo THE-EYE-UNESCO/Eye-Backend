@@ -1,33 +1,22 @@
 import { Request, Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
-import { CreateReportRequest, ReportStatus, Severity } from '../types';
+import { ReportService } from '../services/reportService';
+import { CreateReportRequest } from '../types';
 import { AppError } from '../middleware/errorHandler';
 import { AuthRequest } from '../middleware/auth';
 
 export class ReportController {
+  private reportService: ReportService;
+
+  constructor() {
+    this.reportService = new ReportService();
+  }
+
   async createReport(req: AuthRequest, res: Response) {
     try {
-      const { title, description, category, severity, latitude, longitude }: CreateReportRequest = req.body;
-
-      if (!title || !description || !category || !severity || latitude === undefined || longitude === undefined) {
-        throw new AppError('All fields are required', 400);
-      }
-
-      const reportId = uuidv4();
+      const reportData: CreateReportRequest = req.body;
       const citizenId = req.user?.id;
 
-      const report = {
-        id: reportId,
-        citizen_id: citizenId,
-        title,
-        description,
-        category,
-        severity: severity as Severity,
-        latitude,
-        longitude,
-        status: ReportStatus.PENDING,
-        created_at: new Date()
-      };
+      const report = await this.reportService.createReport(reportData, citizenId);
 
       res.status(201).json({
         message: 'Report created successfully',
@@ -44,22 +33,16 @@ export class ReportController {
   async getReport(req: AuthRequest, res: Response) {
     try {
       const { id } = req.params;
+      const citizenId = req.user?.id;
+      const reportId = Array.isArray(id) ? id[0] : id;
 
-      const report = {
-        id,
-        citizen_id: req.user?.id,
-        title: 'Sample Fire Report',
-        description: 'Fire reported in residential area',
-        category: 'Fire',
-        severity: Severity.HIGH,
-        latitude: -1.943,
-        longitude: 30.059,
-        status: ReportStatus.PENDING,
-        created_at: new Date()
-      };
+      const report = await this.reportService.getReportById(reportId, citizenId);
 
       res.json({ report });
     } catch (error) {
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ message: error.message });
+      }
       res.status(500).json({ message: 'Failed to fetch report' });
     }
   }
@@ -67,15 +50,16 @@ export class ReportController {
   async getReportStatus(req: AuthRequest, res: Response) {
     try {
       const { id } = req.params;
+      const citizenId = req.user?.id;
+      const reportId = Array.isArray(id) ? id[0] : id;
 
-      const status = {
-        reportId: id,
-        status: ReportStatus.PENDING,
-        message: 'Your report is pending verification'
-      };
+      const status = await this.reportService.getReportStatus(reportId, citizenId);
 
       res.json({ status });
     } catch (error) {
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ message: error.message });
+      }
       res.status(500).json({ message: 'Failed to fetch report status' });
     }
   }

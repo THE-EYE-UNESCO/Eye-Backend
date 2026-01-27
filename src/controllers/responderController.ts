@@ -1,27 +1,29 @@
 import { Request, Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
-import { UpdateIncidentStatusRequest, CreateEvidenceRequest, IncidentStatus } from '../types';
+import { ResponderService } from '../services/responderService';
+import { UpdateIncidentStatusRequest, CreateEvidenceRequest } from '../types';
 import { AppError } from '../middleware/errorHandler';
 import { AuthRequest } from '../middleware/auth';
 
 export class ResponderController {
+  private responderService: ResponderService;
+
+  constructor() {
+    this.responderService = new ResponderService();
+  }
+
   async getAssignedIncidents(req: AuthRequest, res: Response) {
     try {
       const responderId = req.user?.id;
+      if (!responderId) {
+        throw new AppError('Responder ID not found', 400);
+      }
 
-      const incidents = [
-        {
-          id: uuidv4(),
-          report_id: uuidv4(),
-          status: IncidentStatus.ASSIGNED,
-          priority: 'HIGH',
-          assigned_responder_id: responderId,
-          created_at: new Date()
-        }
-      ];
-
+      const incidents = await this.responderService.getAssignedIncidents(responderId);
       res.json({ incidents });
     } catch (error) {
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ message: error.message });
+      }
       res.status(500).json({ message: 'Failed to fetch assigned incidents' });
     }
   }
@@ -29,26 +31,19 @@ export class ResponderController {
   async getIncidentDetails(req: AuthRequest, res: Response) {
     try {
       const { id } = req.params;
+      const incidentId = Array.isArray(id) ? id[0] : id;
+      const responderId = req.user?.id;
+      
+      if (!responderId) {
+        throw new AppError('Responder ID not found', 400);
+      }
 
-      const incident = {
-        id,
-        report_id: uuidv4(),
-        status: IncidentStatus.ASSIGNED,
-        priority: 'HIGH',
-        assigned_responder_id: req.user?.id,
-        created_at: new Date(),
-        report: {
-          title: 'Fire Outbreak',
-          description: 'Fire reported in residential area',
-          category: 'Fire',
-          severity: 'HIGH',
-          latitude: -1.943,
-          longitude: 30.059
-        }
-      };
-
-      res.json({ incident });
+      const incidentDetails = await this.responderService.getIncidentDetails(incidentId, responderId);
+      res.json({ incident: incidentDetails });
     } catch (error) {
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ message: error.message });
+      }
       res.status(500).json({ message: 'Failed to fetch incident details' });
     }
   }
@@ -56,23 +51,15 @@ export class ResponderController {
   async updateIncidentStatus(req: AuthRequest, res: Response) {
     try {
       const { id } = req.params;
-      const { status }: UpdateIncidentStatusRequest = req.body;
-
-      if (!status) {
-        throw new AppError('Status is required', 400);
+      const incidentId = Array.isArray(id) ? id[0] : id;
+      const statusUpdate: UpdateIncidentStatusRequest = req.body;
+      const responderId = req.user?.id;
+      
+      if (!responderId) {
+        throw new AppError('Responder ID not found', 400);
       }
 
-      const validStatuses = Object.values(IncidentStatus);
-      if (!validStatuses.includes(status as IncidentStatus)) {
-        throw new AppError('Invalid status', 400);
-      }
-
-      const incident = {
-        id,
-        status,
-        updated_at: new Date()
-      };
-
+      const incident = await this.responderService.updateIncidentStatus(incidentId, statusUpdate, responderId);
       res.json({
         message: 'Incident status updated successfully',
         incident
@@ -88,21 +75,15 @@ export class ResponderController {
   async uploadEvidence(req: AuthRequest, res: Response) {
     try {
       const { id } = req.params;
-      const { file_url, note }: CreateEvidenceRequest = req.body;
-
-      if (!file_url) {
-        throw new AppError('File URL is required', 400);
+      const incidentId = Array.isArray(id) ? id[0] : id;
+      const evidenceData: CreateEvidenceRequest = req.body;
+      const responderId = req.user?.id;
+      
+      if (!responderId) {
+        throw new AppError('Responder ID not found', 400);
       }
 
-      const evidence = {
-        id: uuidv4(),
-        incident_id: id,
-        uploaded_by: req.user?.id,
-        file_url,
-        note,
-        created_at: new Date()
-      };
-
+      const evidence = await this.responderService.uploadEvidence(incidentId, evidenceData, responderId);
       res.status(201).json({
         message: 'Evidence uploaded successfully',
         evidence
