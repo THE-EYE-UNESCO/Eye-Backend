@@ -59,7 +59,46 @@ export class AdminService {
     if (status) {
       return this.db.getIncidentsByStatus(status);
     }
-    return [];
+    return this.db.getAllIncidents();
+  }
+
+  async getIncidentById(incidentId: string): Promise<Incident | null> {
+    const incident = await this.db.getIncident(incidentId);
+    if (!incident) {
+      throw new AppError('Incident not found', 404);
+    }
+    return incident;
+  }
+
+  async updateIncident(incidentId: string, updateData: { priority?: Priority; status?: IncidentStatus }): Promise<Incident> {
+    const incident = await this.db.getIncident(incidentId);
+    if (!incident) {
+      throw new AppError('Incident not found', 404);
+    }
+
+    if (updateData.priority && !Object.values(Priority).includes(updateData.priority)) {
+      throw new AppError('Invalid priority', 400);
+    }
+
+    if (updateData.status && !Object.values(IncidentStatus).includes(updateData.status)) {
+      throw new AppError('Invalid status', 400);
+    }
+
+    const updatedIncident = await this.db.updateIncident(incidentId, updateData);
+    if (!updatedIncident) {
+      throw new AppError('Failed to update incident', 500);
+    }
+
+    return updatedIncident;
+  }
+
+  async deleteIncident(incidentId: string): Promise<void> {
+    const incident = await this.db.getIncident(incidentId);
+    if (!incident) {
+      throw new AppError('Incident not found', 404);
+    }
+
+    await this.db.deleteIncident(incidentId);
   }
 
   async assignResponder(incidentId: string, assignmentData: AssignResponderRequest): Promise<Incident> {

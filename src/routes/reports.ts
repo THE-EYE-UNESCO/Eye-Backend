@@ -5,8 +5,8 @@ import { authenticate } from '../middleware/auth';
 const router = Router();
 const reportController = new ReportController();
 
-router.post('/', authenticate, reportController.createReport);
-router.get('/:id', authenticate, reportController.getReport);
-router.get('/:id/status', authenticate, reportController.getReportStatus);
+router.post('/', authenticate, (req, res) => reportController.createReport(req, res));
+router.get('/:id', authenticate, (req, res) => reportController.getReport(req, res));
+router.get('/:id/status', authenticate, (req, res) => reportController.getReportStatus(req, res));
 
 export { router as reportRoutes };

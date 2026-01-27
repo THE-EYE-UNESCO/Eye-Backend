@@ -77,6 +77,40 @@ export class ReportService {
     return this.db.getReportsByStatus(ReportStatus.PENDING);
   }
 
+  async getAllReports(): Promise<Report[]> {
+    return this.db.getAllReports();
+  }
+
+  async updateReport(reportId: string, updateData: Partial<CreateReportRequest>): Promise<Report | null> {
+    const report = await this.db.getReport(reportId);
+    if (!report) {
+      throw new AppError('Report not found', 404);
+    }
+
+    if (updateData.severity && !Object.values(Severity).includes(updateData.severity)) {
+      throw new AppError('Invalid severity level', 400);
+    }
+
+    if (updateData.latitude !== undefined && (updateData.latitude < -90 || updateData.latitude > 90)) {
+      throw new AppError('Invalid latitude', 400);
+    }
+
+    if (updateData.longitude !== undefined && (updateData.longitude < -180 || updateData.longitude > 180)) {
+      throw new AppError('Invalid longitude', 400);
+    }
+
+    return this.db.updateReport(reportId, updateData);
+  }
+
+  async deleteReport(reportId: string): Promise<void> {
+    const report = await this.db.getReport(reportId);
+    if (!report) {
+      throw new AppError('Report not found', 404);
+    }
+
+    await this.db.deleteReport(reportId);
+  }
+
   async updateReportStatus(reportId: string, status: ReportStatus): Promise<Report | null> {
     if (!Object.values(ReportStatus).includes(status)) {
       throw new AppError('Invalid status', 400);

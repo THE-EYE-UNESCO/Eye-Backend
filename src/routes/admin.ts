@@ -9,10 +9,10 @@ const adminController = new AdminController();
 router.use(authenticate);
 router.use(authorize(UserRole.ADMIN));
 
-router.get('/dashboard', adminController.getDashboard);
-router.get('/reports', adminController.getPendingReports);
-router.patch('/reports/:id/verify', adminController.verifyReport);
-router.get('/incidents', adminController.getIncidents);
-router.post('/incidents/:id/assign', adminController.assignResponder);
+router.get('/dashboard', (req, res) => adminController.getDashboard(req, res));
+router.get('/reports', (req, res) => adminController.getPendingReports(req, res));
+router.patch('/reports/:id/verify', (req, res) => adminController.verifyReport(req, res));
+router.get('/incidents', (req, res) => adminController.getIncidents(req, res));
+router.post('/incidents/:id/assign', (req, res) => adminController.assignResponder(req, res));
 
 export { router as adminRoutes };

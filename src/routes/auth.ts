@@ -4,7 +4,7 @@ import { AuthController } from '../controllers/authController';
 const router = Router();
 const authController = new AuthController();
 
-router.post('/register', authController.register);
-router.post('/login', authController.login);
+router.post('/register', (req, res) => authController.register(req, res));
+router.post('/login', (req, res) => authController.login(req, res));
 
 export { router as authRoutes };

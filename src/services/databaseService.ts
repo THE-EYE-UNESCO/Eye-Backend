@@ -92,12 +92,28 @@ export class DatabaseService {
     return this.incidents.get(id) || null;
   }
 
+  async getAllReports(): Promise<Report[]> {
+    return Array.from(this.reports.values());
+  }
+
+  async getAllIncidents(): Promise<Incident[]> {
+    return Array.from(this.incidents.values());
+  }
+
   async getReportsByStatus(status: string): Promise<Report[]> {
     return Array.from(this.reports.values()).filter(report => report.status === status);
   }
 
   async getIncidentsByStatus(status: string): Promise<Incident[]> {
     return Array.from(this.incidents.values()).filter(incident => incident.status === status);
+  }
+
+  async deleteReport(id: string): Promise<void> {
+    this.reports.delete(id);
+  }
+
+  async deleteIncident(id: string): Promise<void> {
+    this.incidents.delete(id);
   }
 
   async getIncidentsByResponder(responderId: string): Promise<Incident[]> {

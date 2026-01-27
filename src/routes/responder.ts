@@ -9,9 +9,9 @@ const responderController = new ResponderController();
 router.use(authenticate);
 router.use(authorize(UserRole.RESPONDER));
 
-router.get('/incidents', responderController.getAssignedIncidents);
-router.get('/incidents/:id', responderController.getIncidentDetails);
-router.patch('/incidents/:id/status', responderController.updateIncidentStatus);
-router.post('/incidents/:id/evidence', responderController.uploadEvidence);
+router.get('/incidents', (req, res) => responderController.getAssignedIncidents(req, res));
+router.get('/incidents/:id', (req, res) => responderController.getIncidentDetails(req, res));
+router.patch('/incidents/:id/status', (req, res) => responderController.updateIncidentStatus(req, res));
+router.post('/incidents/:id/evidence', (req, res) => responderController.uploadEvidence(req, res));
 
 export { router as responderRoutes };

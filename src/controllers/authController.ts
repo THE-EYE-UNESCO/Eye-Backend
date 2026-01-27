@@ -27,10 +27,11 @@ export class AuthController {
         ...result
       });
     } catch (error) {
+      console.error('Registration error:', error);
       if (error instanceof AppError) {
         return res.status(error.statusCode).json({ message: error.message });
       }
-      res.status(500).json({ message: 'Registration failed' });
+      res.status(500).json({ message: 'Registration failed', error: error instanceof Error ? error.message : 'Unknown error' });
     }
   }
 
