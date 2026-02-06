@@ -67,5 +67,48 @@ class AdminController {
             res.status(500).json({ message: 'Failed to assign responder' });
         }
     }
+    async getIncidentById(req, res) {
+        try {
+            const { id } = req.params;
+            const incidentId = Array.isArray(id) ? id[0] : id;
+            const incident = await this.adminService.getIncidentById(incidentId);
+            res.json({ incident });
+        }
+        catch (error) {
+            if (error instanceof errorHandler_1.AppError) {
+                return res.status(error.statusCode).json({ message: error.message });
+            }
+            res.status(500).json({ message: 'Failed to fetch incident' });
+        }
+    }
+    async updateIncident(req, res) {
+        try {
+            const { id } = req.params;
+            const incidentId = Array.isArray(id) ? id[0] : id;
+            const updateData = req.body;
+            const incident = await this.adminService.updateIncident(incidentId, updateData);
+            res.json({ message: 'Incident updated successfully', incident });
+        }
+        catch (error) {
+            if (error instanceof errorHandler_1.AppError) {
+                return res.status(error.statusCode).json({ message: error.message });
+            }
+            res.status(500).json({ message: 'Failed to update incident' });
+        }
+    }
+    async deleteIncident(req, res) {
+        try {
+            const { id } = req.params;
+            const incidentId = Array.isArray(id) ? id[0] : id;
+            await this.adminService.deleteIncident(incidentId);
+            res.json({ message: 'Incident deleted successfully' });
+        }
+        catch (error) {
+            if (error instanceof errorHandler_1.AppError) {
+                return res.status(error.statusCode).json({ message: error.message });
+            }
+            res.status(500).json({ message: 'Failed to delete incident' });
+        }
+    }
 }
 exports.AdminController = AdminController;

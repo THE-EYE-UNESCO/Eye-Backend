@@ -49,7 +49,38 @@ class AdminService {
         if (status) {
             return this.db.getIncidentsByStatus(status);
         }
-        return [];
+        return this.db.getAllIncidents();
+    }
+    async getIncidentById(incidentId) {
+        const incident = await this.db.getIncident(incidentId);
+        if (!incident) {
+            throw new errorHandler_1.AppError('Incident not found', 404);
+        }
+        return incident;
+    }
+    async updateIncident(incidentId, updateData) {
+        const incident = await this.db.getIncident(incidentId);
+        if (!incident) {
+            throw new errorHandler_1.AppError('Incident not found', 404);
+        }
+        if (updateData.priority && !Object.values(types_1.Priority).includes(updateData.priority)) {
+            throw new errorHandler_1.AppError('Invalid priority', 400);
+        }
+        if (updateData.status && !Object.values(types_1.IncidentStatus).includes(updateData.status)) {
+            throw new errorHandler_1.AppError('Invalid status', 400);
+        }
+        const updatedIncident = await this.db.updateIncident(incidentId, updateData);
+        if (!updatedIncident) {
+            throw new errorHandler_1.AppError('Failed to update incident', 500);
+        }
+        return updatedIncident;
+    }
+    async deleteIncident(incidentId) {
+        const incident = await this.db.getIncident(incidentId);
+        if (!incident) {
+            throw new errorHandler_1.AppError('Incident not found', 404);
+        }
+        await this.db.deleteIncident(incidentId);
     }
     async assignResponder(incidentId, assignmentData) {
         const { responder_id } = assignmentData;

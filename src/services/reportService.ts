@@ -10,14 +10,14 @@ export class ReportService {
   }
 
   async createReport(reportData: CreateReportRequest, citizenId?: string): Promise<Report> {
-    const { title, description, category, severity, latitude, longitude } = reportData;
+    const { title, description, category, severity, latitude, longitude, address, landmark } = reportData;
 
     if (!title || !description || !category || !severity || latitude === undefined || longitude === undefined) {
       throw new AppError('All fields are required', 400);
     }
 
     if (!Object.values(Severity).includes(severity)) {
-      throw new AppError('Invalid severity level', 400);
+      throw new AppError(`Invalid severity level: ${severity}`, 400);
     }
 
     if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
@@ -32,6 +32,8 @@ export class ReportService {
       severity,
       latitude,
       longitude,
+      address,
+      landmark,
       status: ReportStatus.PENDING
     });
 
@@ -79,6 +81,10 @@ export class ReportService {
 
   async getAllReports(): Promise<Report[]> {
     return this.db.getAllReports();
+  }
+
+  async getReportsByCitizen(citizenId: string): Promise<Report[]> {
+    return this.db.getReportsByCitizen(citizenId);
   }
 
   async updateReport(reportId: string, updateData: Partial<CreateReportRequest>): Promise<Report | null> {

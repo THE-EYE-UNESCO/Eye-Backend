@@ -16,10 +16,11 @@ export class AuthService {
     name: string;
     email: string;
     phone?: string;
+    address?: string;
     password: string;
     role?: UserRole;
   }): Promise<{ user: Omit<User, 'password_hash'>; token: string }> {
-    const { name, email, phone, password, role = UserRole.CITIZEN } = userData;
+    const { name, email, phone, address, password, role = UserRole.CITIZEN } = userData;
 
     if (!name || !email || !password) {
       throw new AppError('Name, email, and password are required', 400);
@@ -35,6 +36,7 @@ export class AuthService {
       name,
       email,
       phone: phone || '',
+      address: address || '',
       role,
       password_hash: hashedPassword
     });

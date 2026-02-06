@@ -81,11 +81,23 @@ class DatabaseService {
     async getIncident(id) {
         return this.incidents.get(id) || null;
     }
+    async getAllReports() {
+        return Array.from(this.reports.values());
+    }
+    async getAllIncidents() {
+        return Array.from(this.incidents.values());
+    }
     async getReportsByStatus(status) {
         return Array.from(this.reports.values()).filter(report => report.status === status);
     }
     async getIncidentsByStatus(status) {
         return Array.from(this.incidents.values()).filter(incident => incident.status === status);
+    }
+    async deleteReport(id) {
+        this.reports.delete(id);
+    }
+    async deleteIncident(id) {
+        this.incidents.delete(id);
     }
     async getIncidentsByResponder(responderId) {
         return Array.from(this.incidents.values()).filter(incident => incident.assigned_responder_id === responderId);

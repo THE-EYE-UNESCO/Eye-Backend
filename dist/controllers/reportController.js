@@ -54,5 +54,46 @@ class ReportController {
             res.status(500).json({ message: 'Failed to fetch report status' });
         }
     }
+    async getAllReports(req, res) {
+        try {
+            const reports = await this.reportService.getAllReports();
+            res.json({ reports, total: reports.length });
+        }
+        catch (error) {
+            if (error instanceof errorHandler_1.AppError) {
+                return res.status(error.statusCode).json({ message: error.message });
+            }
+            res.status(500).json({ message: 'Failed to fetch reports' });
+        }
+    }
+    async updateReport(req, res) {
+        try {
+            const { id } = req.params;
+            const reportId = Array.isArray(id) ? id[0] : id;
+            const updateData = req.body;
+            const report = await this.reportService.updateReport(reportId, updateData);
+            res.json({ message: 'Report updated successfully', report });
+        }
+        catch (error) {
+            if (error instanceof errorHandler_1.AppError) {
+                return res.status(error.statusCode).json({ message: error.message });
+            }
+            res.status(500).json({ message: 'Failed to update report' });
+        }
+    }
+    async deleteReport(req, res) {
+        try {
+            const { id } = req.params;
+            const reportId = Array.isArray(id) ? id[0] : id;
+            await this.reportService.deleteReport(reportId);
+            res.json({ message: 'Report deleted successfully' });
+        }
+        catch (error) {
+            if (error instanceof errorHandler_1.AppError) {
+                return res.status(error.statusCode).json({ message: error.message });
+            }
+            res.status(500).json({ message: 'Failed to delete report' });
+        }
+    }
 }
 exports.ReportController = ReportController;

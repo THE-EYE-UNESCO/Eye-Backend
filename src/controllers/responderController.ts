@@ -28,6 +28,18 @@ export class ResponderController {
     }
   }
 
+  async getAllReports(req: AuthRequest, res: Response) {
+    try {
+      const reports = await this.responderService.getAllReports();
+      res.json({ reports });
+    } catch (error) {
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ message: error.message });
+      }
+      res.status(500).json({ message: 'Failed to fetch reports' });
+    }
+  }
+
   async getIncidentDetails(req: AuthRequest, res: Response) {
     try {
       const { id } = req.params;

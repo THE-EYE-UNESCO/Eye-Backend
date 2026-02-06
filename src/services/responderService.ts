@@ -13,6 +13,10 @@ export class ResponderService {
     return this.db.getIncidentsByResponder(responderId);
   }
 
+  async getAllReports(): Promise<any[]> {
+    return this.db.getAllReports();
+  }
+
   async getIncidentDetails(incidentId: string, responderId: string): Promise<{ incident: Incident; report: any } | null> {
     const incident = await this.db.getIncident(incidentId);
     

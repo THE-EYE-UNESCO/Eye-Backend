@@ -7,6 +7,7 @@ export interface User {
   name: string;
   email: string;
   phone: string;
+  address?: string;
   role: UserRole;
   password_hash: string;
   created_at: Date;
@@ -21,6 +22,8 @@ export interface Report {
   severity: Severity;
   latitude: number;
   longitude: number;
+  address?: string;
+  landmark?: string;
   status: ReportStatus;
   created_at: Date;
 }
@@ -59,6 +62,47 @@ export interface Evidence {
   created_at: Date;
 }
 
+export interface Story {
+  id: string;
+  citizen_id: string;
+  author_name?: string;
+  title: string;
+  body: string;
+  image_url?: string;
+  tag?: string;
+  likes_count: number;
+  comments_count: number;
+  user_has_liked?: boolean;
+  created_at: Date;
+}
+
+export interface StoryComment {
+  id: string;
+  story_id: string;
+  user_id: string;
+  author_name?: string;
+  body: string;
+  created_at: Date;
+}
+
+export interface CreateStoryRequest {
+  title: string;
+  body: string;
+  image_url?: string;
+  tag?: string;
+}
+
+export interface UpdateStoryRequest {
+  title?: string;
+  body?: string;
+  image_url?: string;
+  tag?: string;
+}
+
+export interface PostCommentRequest {
+  body: string;
+}
+
 export interface CreateReportRequest {
   title: string;
   description: string;
@@ -66,6 +110,8 @@ export interface CreateReportRequest {
   severity: Severity;
   latitude: number;
   longitude: number;
+  address?: string;
+  landmark?: string;
   anonymous?: boolean;
 }
 

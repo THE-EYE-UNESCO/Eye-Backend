@@ -1,6 +1,6 @@
 # The Eye - Complete API Endpoints
 
-Base URL: `http://localhost:3000/api`
+Base URL: `http://localhost:3001/api`
 
 ---
 
