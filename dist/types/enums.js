@@ -27,6 +27,7 @@ var Severity;
     Severity["LOW"] = "LOW";
     Severity["MEDIUM"] = "MEDIUM";
     Severity["HIGH"] = "HIGH";
+    Severity["CRITICAL"] = "CRITICAL";
 })(Severity || (exports.Severity = Severity = {}));
 var Priority;
 (function (Priority) {

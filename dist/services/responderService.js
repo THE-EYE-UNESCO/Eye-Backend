@@ -11,6 +11,9 @@ class ResponderService {
     async getAssignedIncidents(responderId) {
         return this.db.getIncidentsByResponder(responderId);
     }
+    async getAllReports() {
+        return this.db.getAllReports();
+    }
     async getIncidentDetails(incidentId, responderId) {
         const incident = await this.db.getIncident(incidentId);
         if (!incident) {
