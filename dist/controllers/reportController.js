@@ -66,6 +66,22 @@ class ReportController {
             res.status(500).json({ message: 'Failed to fetch reports' });
         }
     }
+    async getMyReports(req, res) {
+        try {
+            const citizenId = req.user?.id;
+            if (!citizenId) {
+                throw new errorHandler_1.AppError('Authentication required', 401);
+            }
+            const reports = await this.reportService.getReportsByCitizen(citizenId);
+            res.json({ reports, total: reports.length });
+        }
+        catch (error) {
+            if (error instanceof errorHandler_1.AppError) {
+                return res.status(error.statusCode).json({ message: error.message });
+            }
+            res.status(500).json({ message: 'Failed to fetch your reports' });
+        }
+    }
     async updateReport(req, res) {
         try {
             const { id } = req.params;

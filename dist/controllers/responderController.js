@@ -23,6 +23,18 @@ class ResponderController {
             res.status(500).json({ message: 'Failed to fetch assigned incidents' });
         }
     }
+    async getAllReports(req, res) {
+        try {
+            const reports = await this.responderService.getAllReports();
+            res.json({ reports });
+        }
+        catch (error) {
+            if (error instanceof errorHandler_1.AppError) {
+                return res.status(error.statusCode).json({ message: error.message });
+            }
+            res.status(500).json({ message: 'Failed to fetch reports' });
+        }
+    }
     async getIncidentDetails(req, res) {
         try {
             const { id } = req.params;
