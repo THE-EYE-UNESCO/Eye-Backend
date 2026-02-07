@@ -10,11 +10,12 @@ class AuthController {
     }
     async register(req, res) {
         try {
-            const { name, email, phone, password, role = types_1.UserRole.CITIZEN } = req.body;
+            const { name, email, phone, address, password, role = types_1.UserRole.CITIZEN } = req.body;
             const result = await this.authService.register({
                 name,
                 email,
                 phone,
+                address,
                 password,
                 role
             });

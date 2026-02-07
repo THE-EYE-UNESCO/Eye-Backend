@@ -9,12 +9,12 @@ class ReportService {
         this.db = databaseService_1.DatabaseService.getInstance();
     }
     async createReport(reportData, citizenId) {
-        const { title, description, category, severity, latitude, longitude } = reportData;
+        const { title, description, category, severity, latitude, longitude, address, landmark } = reportData;
         if (!title || !description || !category || !severity || latitude === undefined || longitude === undefined) {
             throw new errorHandler_1.AppError('All fields are required', 400);
         }
         if (!Object.values(types_1.Severity).includes(severity)) {
-            throw new errorHandler_1.AppError('Invalid severity level', 400);
+            throw new errorHandler_1.AppError(`Invalid severity level: ${severity}`, 400);
         }
         if (latitude < -90 || latitude > 90 || longitude < -180 || longitude > 180) {
             throw new errorHandler_1.AppError('Invalid coordinates', 400);
@@ -27,6 +27,8 @@ class ReportService {
             severity,
             latitude,
             longitude,
+            address,
+            landmark,
             status: types_1.ReportStatus.PENDING
         });
         return report;
@@ -63,6 +65,9 @@ class ReportService {
     }
     async getAllReports() {
         return this.db.getAllReports();
+    }
+    async getReportsByCitizen(citizenId) {
+        return this.db.getReportsByCitizen(citizenId);
     }
     async updateReport(reportId, updateData) {
         const report = await this.db.getReport(reportId);
