@@ -9,6 +9,7 @@ exports.reportRoutes = router;
 const reportController = new reportController_1.ReportController();
 router.post('/', auth_1.authenticate, (req, res) => reportController.createReport(req, res));
 router.get('/', auth_1.authenticate, (req, res) => reportController.getAllReports(req, res));
+router.get('/my-reports', auth_1.authenticate, (req, res) => reportController.getMyReports(req, res));
 router.get('/:id', auth_1.authenticate, (req, res) => reportController.getReport(req, res));
 router.get('/:id/status', auth_1.authenticate, (req, res) => reportController.getReportStatus(req, res));
 router.put('/:id', auth_1.authenticate, (req, res) => reportController.updateReport(req, res));

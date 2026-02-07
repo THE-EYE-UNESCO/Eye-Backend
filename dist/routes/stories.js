@@ -1,0 +1,18 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.storyRoutes = void 0;
+const express_1 = require("express");
+const storyController_1 = require("../controllers/storyController");
+const auth_1 = require("../middleware/auth");
+const router = (0, express_1.Router)();
+exports.storyRoutes = router;
+const storyController = new storyController_1.StoryController();
+router.post('/', auth_1.authenticate, (req, res) => storyController.createStory(req, res));
+router.get('/', auth_1.authenticate, (req, res) => storyController.getStories(req, res));
+router.post('/:id/like', auth_1.authenticate, (req, res) => storyController.likeStory(req, res));
+router.delete('/:id/like', auth_1.authenticate, (req, res) => storyController.unlikeStory(req, res));
+router.post('/:id/comments', auth_1.authenticate, (req, res) => storyController.addComment(req, res));
+router.get('/:id/comments', auth_1.authenticate, (req, res) => storyController.getComments(req, res));
+router.put('/:id', auth_1.authenticate, (req, res) => storyController.updateStory(req, res));
+router.delete('/:id', auth_1.authenticate, (req, res) => storyController.deleteStory(req, res));
+router.get('/stats', auth_1.authenticate, (req, res) => storyController.getStats(req, res));

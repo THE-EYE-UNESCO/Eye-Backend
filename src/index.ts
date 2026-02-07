@@ -25,7 +25,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/responder', responderRoutes);
 app.use('/api/stories', storyRoutes);
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
   res.json({
     message: 'Welcome to The Eye Backend Service',
     version: '1.0.0',
@@ -33,14 +33,7 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/api', (req, res) => {
-  res.json({
-    message: 'The Eye API Access',
-    version: '1.0.0'
-  });
-});
-
-app.get('/health', (req, res) => {
+app.get('/health', (_, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
@@ -48,14 +41,13 @@ app.use(errorHandler);
 
 const startServer = async () => {
   try {
-    const db = DatabaseService.getInstance();
-    await db.initialize();
-    
+    await DatabaseService.getInstance().initialize();
+
     app.listen(config.port, () => {
-      console.log(`🚀 The Eye Backend Server running on port ${config.port}`);
+      console.log(`🚀 The Eye Backend running on port ${config.port}`);
     });
-  } catch (error) {
-    console.error('Failed to start server:', error);
+  } catch (err) {
+    console.error('❌ Failed to start server', err);
     process.exit(1);
   }
 };

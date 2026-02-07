@@ -1,0 +1,6 @@
+Server:  dns.google
+Address:  8.8.8.8
+
+Name:    db.vznmhkphervavylpbshl.supabase.co
+Address:  2a05:d018:135e:1698:f2eb:7f43:b60:3626
+

@@ -15,7 +15,7 @@ class AuthService {
         this.db = databaseService_1.DatabaseService.getInstance();
     }
     async register(userData) {
-        const { name, email, phone, password, role = types_1.UserRole.CITIZEN } = userData;
+        const { name, email, phone, address, password, role = types_1.UserRole.CITIZEN } = userData;
         if (!name || !email || !password) {
             throw new errorHandler_1.AppError('Name, email, and password are required', 400);
         }
@@ -27,6 +27,7 @@ class AuthService {
             name,
             email,
             phone: phone || '',
+            address: address || '',
             role,
             password_hash: hashedPassword
         });
